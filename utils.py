@@ -6,7 +6,7 @@ import geopandas as gpd
 if os.environ.get("DATA_PATH"):
     DATA_PATH = os.environ["DATA_PATH"]
 else:
-    DATA_PATH = f"covid_emo_top_loc/"
+    DATA_PATH = f"data/"
 
 if os.environ.get("GRAPH_PATH"):
     GRAPH_PATH = os.environ["GRAPH_PATH"]
