@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import geopandas as gpd
+import os
 
 if os.environ.get("DATA_PATH"):
     DATA_PATH = os.environ["DATA_PATH"]
@@ -96,9 +97,11 @@ class Country:
         )
         self.URBA = self.URBA.merge(
             self.weighted_pop_lau, left_on="OBJECTID", right_index=True
-        )
+        ).rename(columns = {"fraction_pop": "population"})
 
     def print_summary_DGURBA(self, savefig=False):
+        if "DGURBA_summary" not in self.__dict__:
+            self.get_summary_DGURBA()
         fig, ax = plt.subplots(figsize=(10, 6))
         c1, c2 = ("tomato", "forestgreen")
         width = 0.4
@@ -117,11 +120,11 @@ class Country:
         ax.yaxis.label.set_color(c1)
         ax2.yaxis.label.set_color(c2)
 
-        ax.set_title("Population and land area by degree of urbanisation")
+        ax.set_title(f"Population and land area by degree of urbanisation of {self.country_code}")
 
         plt.tight_layout()
         if savefig:
-            plt.savefig(f"{GRAPH_PATH}population_land_lau.png")
+            plt.savefig(f"{GRAPH_PATH}population_land_lau_{self.country_code}.png")
         plt.show()
 
     def get_summary_DGURBA(self, plot=True):
@@ -133,6 +136,4 @@ class Country:
             "area_pct": ["sum", "mean", "idxmax", "idxmin"],
         }
         self.DGURBA_summary = tmp_urba.groupby("DGURBA").agg(aggregations)
-        if plot:
-            self.print_summary_DGURBA()
 
